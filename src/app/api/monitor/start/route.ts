@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AppConfig } from '@/types';
-import { isDatacenterAvailable } from '@/lib/api';
-import { sendNotification } from '@/lib/telegram';
 import { DatacenterStatusHistory, OvhProduct, WatchConfig } from '@/types';
 import fs from 'fs';
 import path from 'path';
@@ -13,7 +11,7 @@ export let monitorInterval: NodeJS.Timeout | null = null;
 // 存储当前配置
 export let currentConfig: AppConfig | null = null;
 // 存储状态历史
-export let statusHistory: Record<string, Record<string, DatacenterStatusHistory[]>> = {};
+let statusHistory: Record<string, Record<string, DatacenterStatusHistory[]>> = {};
 // 测试模式标志
 export let testMode: boolean = false;
 // 测试模式下的产品状态
@@ -142,7 +140,7 @@ function generateTestProducts(): OvhProduct[] {
   // 创建一些测试产品
   const products: OvhProduct[] = [
     {
-      fqn: "24sk10-sgp.ram-32g-ecc-2133.softraid-2x480ssd",
+      fqn: "24sk10.ram-32g-ecc-2133.softraid-2x2000sa",
       planCode: "24sk10-sgp",
       server: "SK Server 24sk10-sgp",
       gpu: "NA",
@@ -152,7 +150,7 @@ function generateTestProducts(): OvhProduct[] {
       datacenters: [
         { datacenter: "gra1", availability: "available" },
         { datacenter: "bhs1", availability: "unavailable" },
-        { datacenter: "sgp", availability: "120H" }
+        { datacenter: "sgp1", availability: "120H" }
       ]
     },
     {
@@ -221,20 +219,20 @@ async function fetchOvhProductsServer(): Promise<OvhProduct[]> {
     const productsArray = Array.isArray(data) ? data : [];
     
     // 处理产品数据
-    const products: OvhProduct[] = productsArray.map((item: any, index: number) => {
+    const products: OvhProduct[] = productsArray.map((item: Record<string, unknown>, index: number) => {
       // 创建产品对象，适配新的API格式
       const product = {
-        fqn: item.fqn || `product-${index}`,
-        planCode: item.planCode || `product-${index}`,
-        server: item.server || `product-${index}`,
-        gpu: item.gpu || 'N/A',
-        memory: item.memory || 'N/A',
-        storage: item.storage || 'N/A',
-        systemStorage: item.systemStorage || 'N/A',
-        datacenters: (item.datacenters || []).map((dc: any) => ({
-          datacenter: dc.datacenter || '',
-          availability: dc.availability || 'unknown',
-        })),
+        fqn: item.fqn as string || `product-${index}`,
+        planCode: item.planCode as string || `product-${index}`,
+        server: item.server as string || `product-${index}`,
+        gpu: item.gpu as string || 'N/A',
+        memory: item.memory as string || 'N/A',
+        storage: item.storage as string || 'N/A',
+        systemStorage: item.systemStorage as string || 'N/A',
+        datacenters: ((item.datacenters as Record<string, unknown>[] || []).map((dc: Record<string, unknown>) => ({
+          datacenter: dc.datacenter as string || '',
+          availability: dc.availability as string || 'unknown',
+        }))),
       };
       
       return product;
@@ -243,7 +241,7 @@ async function fetchOvhProductsServer(): Promise<OvhProduct[]> {
     // 如果启用了测试模式，修改特定产品的可用性
     if (testMode && testModeProducts.length > 0) {
       // 查找指定FQN的产品
-      const targetFQN = "24sk10-sgp.ram-32g-ecc-2133.softraid-2x480ssd";
+      const targetFQN = "24sk10.ram-32g-ecc-2133.softraid-2x2000sa";
       const targetProduct = products.find(p => p.fqn === targetFQN);
       
       if (targetProduct) {
@@ -251,16 +249,16 @@ async function fetchOvhProductsServer(): Promise<OvhProduct[]> {
         
         // 查找gra数据中心
         const graDatacenterIndex = targetProduct.datacenters.findIndex(
-          dc => dc.datacenter.toLowerCase().includes('sgp')
+          dc => dc.datacenter.toLowerCase().includes('gra')
         );
         
         if (graDatacenterIndex >= 0) {
-          console.log(`找到sgp数据中心，索引: ${graDatacenterIndex}`);
+          console.log(`找到gra数据中心，索引: ${graDatacenterIndex}`);
           
           // 获取测试模式下的可用性设置
           const testProduct = testModeProducts[0];
           const testDatacenter = testProduct.datacenters.find(
-            dc => dc.datacenter.toLowerCase().includes('sgp')
+            dc => dc.datacenter.toLowerCase().includes('gra')
           );
           
           if (testDatacenter) {
@@ -271,7 +269,7 @@ async function fetchOvhProductsServer(): Promise<OvhProduct[]> {
             console.log(`测试模式：修改产品 ${targetFQN} 的gra数据中心可用性从 ${oldAvailability} 为 ${testDatacenter.availability}`);
           }
         } else {
-          console.log(`未找到sgp数据中心`);
+          console.log(`未找到gra数据中心`);
         }
       } else {
         console.log(`未找到目标测试产品: ${targetFQN}`);
@@ -382,15 +380,31 @@ async function processNotifications(
 
           // 仅当可用性状态发生变化时发送通知
           if (lastStatus !== null) {  // 确保不是第一次记录
-            await sendNotification(
-              telegramConfig, 
-              product, 
-              i, 
-              watchConfig.productFilters.datacenter !== undefined,
-              currentTime,
-              timeInterval,
-              lastStatus
-            );
+            // 使用API端点发送通知，而不是直接调用客户端函数
+            try {
+              // 在服务器端，需要使用完整的URL
+              const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+              const response = await fetch(`${baseUrl}/api/telegram`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  telegramConfig,
+                  product,
+                  datacenterIndex: i,
+                  singleDatacenterOnly: watchConfig.productFilters.datacenter !== undefined,
+                  currentTime,
+                  timeInterval,
+                  previousStatus: lastStatus
+                }),
+              });
+              
+              const data = await response.json();
+              console.log('Telegram通知发送结果:', data);
+            } catch (error) {
+              console.error('发送Telegram通知失败:', error);
+            }
 
             // 更新最后通知时间
             watchConfig.lastNotification = currentTime;
@@ -542,7 +556,7 @@ export async function PUT(request: NextRequest) {
       
       // 找到gra数据中心
       const graDatacenter = product.datacenters.find(
-        dc => dc.datacenter.toLowerCase().includes('sgp')
+        dc => dc.datacenter.toLowerCase().includes('gra')
       );
       
       if (graDatacenter) {
@@ -564,7 +578,7 @@ export async function PUT(request: NextRequest) {
       }
       
       return NextResponse.json(
-        { success: false, error: '未找到sgp数据中心' },
+        { success: false, error: '未找到gra数据中心' },
         { status: 400 }
       );
     } else {

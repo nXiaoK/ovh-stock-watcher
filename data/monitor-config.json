@@ -9,17 +9,58 @@
     {
       "enabled": true,
       "productFilters": {
-        "fqn": "24sk10-sgp.ram-32g-ecc-2133.softraid-2x480ssd",
-        "datacenter": "sgp"
+        "fqn": "24sk10.ram-32g-ecc-2133.softraid-2x2000sa"
       },
       "notifyOnAvailability": false,
-      "id": "f67c79a3-0fab-4204-a6ad-9e4dc825a888",
+      "id": "dbc3eb87-69e5-4bd6-9c49-6ed57e009fb4",
       "statusHistory": {
-        "sgp": [
+        "bhs": [
           {
-            "datacenter": "sgp",
+            "datacenter": "bhs",
+            "availability": "1H-low",
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "fra": [
+          {
+            "datacenter": "fra",
             "availability": "unavailable",
-            "timestamp": "2025-04-15T13:34:19.614Z"
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "gra": [
+          {
+            "datacenter": "gra",
+            "availability": "1H-low",
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "lon": [
+          {
+            "datacenter": "lon",
+            "availability": "unavailable",
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "rbx": [
+          {
+            "datacenter": "rbx",
+            "availability": "1H-low",
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "sbg": [
+          {
+            "datacenter": "sbg",
+            "availability": "unavailable",
+            "timestamp": "2025-04-15T14:13:20.759Z"
+          }
+        ],
+        "waw": [
+          {
+            "datacenter": "waw",
+            "availability": "1H-low",
+            "timestamp": "2025-04-15T14:13:20.759Z"
           }
         ]
       }

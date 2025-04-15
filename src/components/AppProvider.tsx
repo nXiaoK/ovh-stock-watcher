@@ -98,7 +98,7 @@ export default function AppProvider({ children }: { children: React.ReactNode })
             </div>
           )}
           <div className="mt-2 text-xs text-gray-300">
-            <p>测试指定产品: 24sk10-sgp.ram-32g-ecc-2133.softraid-2x480ssd</p>
+            <p>测试指定产品: 24sk10.ram-32g-ecc-2133.softraid-2x2000sa</p>
             <p>测试指定数据中心: GRA</p>
           </div>
         </div>

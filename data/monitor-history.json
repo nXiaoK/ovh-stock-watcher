@@ -117,6 +117,36 @@
         "datacenter": "sgp",
         "availability": "unavailable",
         "timestamp": "2025-04-15T13:38:14.545Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "120H",
+        "timestamp": "2025-04-15T14:02:37.394Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "available",
+        "timestamp": "2025-04-15T14:02:41.583Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:02:52.357Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "120H",
+        "timestamp": "2025-04-15T14:04:19.789Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "available",
+        "timestamp": "2025-04-15T14:05:35.755Z"
+      },
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:06:56.507Z"
       }
     ],
     "sgp1": [
@@ -124,6 +154,88 @@
         "datacenter": "sgp1",
         "availability": "120H",
         "timestamp": "2025-04-15T13:38:16.495Z"
+      }
+    ]
+  },
+  "dbc3eb87-69e5-4bd6-9c49-6ed57e009fb4": {
+    "gra1": [
+      {
+        "datacenter": "gra1",
+        "availability": "available",
+        "timestamp": "2025-04-15T14:13:24.029Z"
+      },
+      {
+        "datacenter": "gra1",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:13:29.975Z"
+      },
+      {
+        "datacenter": "gra1",
+        "availability": "120H",
+        "timestamp": "2025-04-15T14:13:45.388Z"
+      }
+    ],
+    "bhs1": [
+      {
+        "datacenter": "bhs1",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:13:24.029Z"
+      }
+    ],
+    "sgp1": [
+      {
+        "datacenter": "sgp1",
+        "availability": "120H",
+        "timestamp": "2025-04-15T14:13:24.029Z"
+      }
+    ],
+    "bhs": [
+      {
+        "datacenter": "bhs",
+        "availability": "1H-low",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "fra": [
+      {
+        "datacenter": "fra",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "gra": [
+      {
+        "datacenter": "gra",
+        "availability": "1H-low",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "lon": [
+      {
+        "datacenter": "lon",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "rbx": [
+      {
+        "datacenter": "rbx",
+        "availability": "1H-low",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "sbg": [
+      {
+        "datacenter": "sbg",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T14:13:53.609Z"
+      }
+    ],
+    "waw": [
+      {
+        "datacenter": "waw",
+        "availability": "1H-low",
+        "timestamp": "2025-04-15T14:13:53.609Z"
       }
     ]
   }

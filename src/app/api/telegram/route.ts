@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 import { TelegramConfig, OvhProduct } from '@/types';
-import { isDatacenterAvailable } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
+
+// 服务器端实现的数据中心可用性检查函数
+function isDatacenterAvailable(availability: string): boolean {
+  return (
+    availability !== 'unavailable' && 
+    availability !== '' && 
+    availability.toLowerCase() !== 'unknown'
+  );
+}
 
 export async function POST(request: Request) {
   try {
