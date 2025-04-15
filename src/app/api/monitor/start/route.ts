@@ -462,7 +462,7 @@ function startMonitoring(config: AppConfig) {
 }
 
 // 停止监控服务
-export function stopMonitoring() {
+function stopMonitoring() {
   // 清除定时器
   if (monitorInterval) {
     clearInterval(monitorInterval);
@@ -520,6 +520,23 @@ export async function GET() {
     config: currentConfig,
     lastCheck: previousProducts.length > 0 ? new Date().toISOString() : null
   });
+}
+
+// 停止监控API
+export async function DELETE() {
+  try {
+    stopMonitoring();
+    return NextResponse.json({ 
+      success: true, 
+      message: '监控服务已停止' 
+    });
+  } catch (error) {
+    console.error('停止监控服务失败:', error);
+    return NextResponse.json(
+      { success: false, error: '停止监控服务失败' },
+      { status: 500 }
+    );
+  }
 }
 
 // 在服务器启动时初始化监控服务
