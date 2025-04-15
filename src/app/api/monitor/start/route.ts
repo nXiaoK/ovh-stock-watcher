@@ -5,11 +5,11 @@ import fs from 'fs';
 import path from 'path';
 
 // 存储上次检查时的产品状态
-export let previousProducts: OvhProduct[] = [];
+let previousProducts: OvhProduct[] = [];
 // 存储定时器ID
-export let monitorInterval: NodeJS.Timeout | null = null;
+let monitorInterval: NodeJS.Timeout | null = null;
 // 存储当前配置
-export let currentConfig: AppConfig | null = null;
+let currentConfig: AppConfig | null = null;
 // 存储状态历史
 let statusHistory: Record<string, Record<string, DatacenterStatusHistory[]>> = {};
 // 测试模式标志
