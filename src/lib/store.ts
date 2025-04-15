@@ -2,6 +2,15 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { AppConfig, AppState, WatchConfig } from '@/types';
 
+// 生成UUID的兼容函数
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 const defaultConfig: AppConfig = {
   telegramConfig: {
     enabled: false,
@@ -29,7 +38,7 @@ export const useAppStore = create<AppState>()(
             ...state.config,
             watchConfigs: [
               ...state.config.watchConfigs,
-              { ...config, id: crypto.randomUUID() }
+              { ...config, id: generateUUID() }
             ]
           }
         })),
