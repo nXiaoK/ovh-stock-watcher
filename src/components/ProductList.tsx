@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppStore } from '@/lib/store';
 import { OvhProduct } from '@/types';
 import { formatAvailability } from '@/lib/utils';
@@ -10,6 +10,14 @@ import { PlusCircle } from 'lucide-react';
 
 export function ProductList() {
   const { products, loading, addWatchConfig } = useAppStore();
+  
+  // 添加调试日志
+  useEffect(() => {
+    console.log('ProductList组件渲染，产品数量:', products.length);
+    if (products.length > 0) {
+      console.log('第一个产品:', products[0]);
+    }
+  }, [products]);
   
   if (loading) {
     return (
@@ -29,11 +37,13 @@ export function ProductList() {
   
   // 筛选包含SK的产品，但不再筛选可用性
   const skProducts = filterSKProducts(products);
+  console.log('ProductList中过滤后的SK产品数量:', skProducts.length);
   
   if (skProducts.length === 0) {
     return (
       <div className="p-4 text-center">
         <p className="text-gray-500">暂无SK产品</p>
+        <p className="text-sm text-gray-400 mt-2">总产品数: {products.length}</p>
       </div>
     );
   }

@@ -1,0 +1,28 @@
+{
+  "telegramConfig": {
+    "botToken": "7578013662:AAHz7dFLwqO7OOkprNMIVzdDwTjJZghspDY",
+    "chatId": "1643029481",
+    "enabled": true
+  },
+  "checkIntervalSeconds": 10,
+  "watchConfigs": [
+    {
+      "enabled": true,
+      "productFilters": {
+        "fqn": "24sk10-sgp.ram-32g-ecc-2133.softraid-2x480ssd",
+        "datacenter": "sgp"
+      },
+      "notifyOnAvailability": false,
+      "id": "f67c79a3-0fab-4204-a6ad-9e4dc825a888",
+      "statusHistory": {
+        "sgp": [
+          {
+            "datacenter": "sgp",
+            "availability": "unavailable",
+            "timestamp": "2025-04-15T13:34:19.614Z"
+          }
+        ]
+      }
+    }
+  ]
+}

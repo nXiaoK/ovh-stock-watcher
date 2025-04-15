@@ -1,0 +1,130 @@
+{
+  "0d22fb80-df78-49c7-a411-f242f367f534": {
+    "sgp": [
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ]
+  },
+  "2188774a-834a-4b06-aec5-57ddf2d60b78": {
+    "sgp": [
+      {
+        "datacenter": "sgp",
+        "availability": "1H-high",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ]
+  },
+  "b6a9378e-fa55-4e73-8d88-f45ed6713c5a": {
+    "bhs": [
+      {
+        "datacenter": "bhs",
+        "availability": "1H-low",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "fra": [
+      {
+        "datacenter": "fra",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "gra": [
+      {
+        "datacenter": "gra",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "lon": [
+      {
+        "datacenter": "lon",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "rbx": [
+      {
+        "datacenter": "rbx",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "sbg": [
+      {
+        "datacenter": "sbg",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ],
+    "waw": [
+      {
+        "datacenter": "waw",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:16:07.068Z"
+      }
+    ]
+  },
+  "b94499a4-35f6-4c66-ae82-539c15ba4839": {
+    "syd": [
+      {
+        "datacenter": "syd",
+        "availability": "1H-high",
+        "timestamp": "2025-04-15T13:18:15.134Z"
+      }
+    ]
+  },
+  "5e41bd00-14be-40d7-97be-09157c6fafa3": {
+    "gra1": [
+      {
+        "datacenter": "gra1",
+        "availability": "available",
+        "timestamp": "2025-04-15T13:28:52.991Z"
+      }
+    ]
+  },
+  "d2aa35d6-26c7-47e1-9839-47a4c766b973": {
+    "sgp": [
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:28:47.440Z"
+      }
+    ]
+  },
+  "75602578-25de-490f-81a1-f62cdc613f9d": {
+    "sgp1": [
+      {
+        "datacenter": "sgp1",
+        "availability": "120H",
+        "timestamp": "2025-04-15T13:33:39.023Z"
+      }
+    ],
+    "sgp": [
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:33:40.084Z"
+      }
+    ]
+  },
+  "f67c79a3-0fab-4204-a6ad-9e4dc825a888": {
+    "sgp": [
+      {
+        "datacenter": "sgp",
+        "availability": "unavailable",
+        "timestamp": "2025-04-15T13:38:14.545Z"
+      }
+    ],
+    "sgp1": [
+      {
+        "datacenter": "sgp1",
+        "availability": "120H",
+        "timestamp": "2025-04-15T13:38:16.495Z"
+      }
+    ]
+  }
+}

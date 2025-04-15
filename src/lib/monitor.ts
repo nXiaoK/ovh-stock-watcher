@@ -7,6 +7,130 @@ import { DatacenterStatusHistory, OvhProduct, WatchConfig } from '@/types';
 
 // 存储上次检查时的产品状态
 let previousProducts: OvhProduct[] = [];
+// 存储定时器ID
+let monitorInterval: NodeJS.Timeout | null = null;
+
+// 初始化监控服务
+export function initMonitorService() {
+  // 如果已经有定时器在运行，先清除
+  if (monitorInterval) {
+    clearInterval(monitorInterval);
+  }
+  
+  // 立即执行一次检查
+  checkAvailability();
+  
+  // 获取当前配置
+  const { config } = useAppStore.getState();
+  
+  // 设置新的定时器
+  const intervalMs = config.checkIntervalSeconds * 1000;
+  monitorInterval = setInterval(checkAvailability, intervalMs);
+  
+  // 返回清理函数
+  return () => {
+    if (monitorInterval) {
+      clearInterval(monitorInterval);
+      monitorInterval = null;
+    }
+  };
+}
+
+// 获取服务器端监控状态
+export async function getServerMonitoringStatus() {
+  try {
+    const response = await fetch('/api/monitor/status');
+    if (!response.ok) {
+      throw new Error('获取监控状态失败');
+    }
+    
+    const data = await response.json();
+    console.log('服务器端监控状态:', data);
+    
+    // 如果服务器端有配置，则更新客户端配置
+    if (data.config) {
+      const { config: clientConfig, updateConfig } = useAppStore.getState();
+      
+      // 检查是否需要更新客户端配置
+      const needsUpdate = 
+        // 监控配置为空
+        clientConfig.watchConfigs.length === 0 && data.config.watchConfigs.length > 0 ||
+        // Telegram配置为空但服务器端有
+        (!clientConfig.telegramConfig.enabled && data.config.telegramConfig.enabled);
+      
+      if (needsUpdate) {
+        console.log('从服务器同步配置到客户端');
+        
+        // 保留客户端的Telegram配置（如果有）
+        const telegramConfig = clientConfig.telegramConfig.enabled ? 
+          clientConfig.telegramConfig : 
+          data.config.telegramConfig;
+        
+        // 更新配置
+        updateConfig({
+          ...clientConfig,
+          watchConfigs: data.config.watchConfigs,
+          telegramConfig: telegramConfig
+        });
+      }
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('获取服务器监控状态错误:', error);
+    return null;
+  }
+}
+
+// 启动服务器端监控
+export async function startServerMonitoring(testMode: boolean = false) {
+  try {
+    // 获取当前配置
+    const { config } = useAppStore.getState();
+    
+    // 构建URL，添加测试模式参数
+    const url = testMode ? '/api/monitor/start?testMode=true' : '/api/monitor/start';
+    
+    // 调用API启动服务器端监控
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(config),
+    });
+    
+    if (!response.ok) {
+      throw new Error('启动服务器监控失败');
+    }
+    
+    const data = await response.json();
+    console.log('服务器端监控已启动', data);
+    return true;
+  } catch (error) {
+    console.error('启动服务器监控错误:', error);
+    return false;
+  }
+}
+
+// 停止服务器端监控
+export async function stopServerMonitoring() {
+  try {
+    // 调用API停止服务器端监控
+    const response = await fetch('/api/monitor/stop', {
+      method: 'POST',
+    });
+    
+    if (!response.ok) {
+      throw new Error('停止服务器监控失败');
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('停止服务器监控错误:', error);
+    return false;
+  }
+}
 
 export async function checkAvailability() {
   const { 
@@ -175,4 +299,30 @@ function formatTimeInterval(intervalMs: number): string {
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
   return `${days}天${remainingHours > 0 ? remainingHours + '小时' : ''}`;
+}
+
+// 更新测试产品可用性
+export async function updateTestProductAvailability(availability: string) {
+  try {
+    const response = await fetch('/api/monitor/start', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        availability
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('更新测试产品可用性失败');
+    }
+    
+    const data = await response.json();
+    console.log('测试产品可用性已更新', data);
+    return data;
+  } catch (error) {
+    console.error('更新测试产品可用性错误:', error);
+    return null;
+  }
 } 

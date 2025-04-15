@@ -1,10 +1,35 @@
+'use client';
+
+import { useEffect } from 'react';
 import { AddWatchForm } from "@/components/AddWatchForm";
 import { ConfigForm } from "@/components/ConfigForm";
 import { ProductList } from "@/components/ProductList";
 import { StatusBar } from "@/components/StatusBar";
 import { WatchList } from "@/components/WatchList";
+import { useAppStore } from '@/lib/store';
+import { fetchOvhProducts } from '@/lib/api';
 
 export default function Home() {
+  const { setProducts, setLoading, setLastChecked } = useAppStore();
+
+  // 初始化加载产品列表
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const products = await fetchOvhProducts();
+        setProducts(products);
+        setLastChecked(new Date().toISOString());
+      } catch (error) {
+        console.error('加载产品列表失败:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-4">

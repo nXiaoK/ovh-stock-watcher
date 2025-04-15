@@ -1,15 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { useAppStore } from '@/lib/store';
 import { formatDate } from '@/lib/utils';
 import { checkAvailability } from '@/lib/monitor';
 
 export function StatusBar() {
-  const { config, lastChecked, loading, products } = useAppStore();
+  const { config, products, loading, lastChecked } = useAppStore();
   const { telegramConfig, checkIntervalSeconds, watchConfigs } = config;
-  
+  const [serverStatus, setServerStatus] = useState<{
+    running: boolean;
+    lastCheck: string | null;
+  } | null>(null);
+
+  // 获取服务器端监控状态
+  useEffect(() => {
+    const fetchServerStatus = async () => {
+      try {
+        const response = await fetch('/api/monitor/status');
+        if (response.ok) {
+          const data = await response.json();
+          setServerStatus({
+            running: data.running,
+            lastCheck: data.lastCheck
+          });
+        }
+      } catch (error) {
+        console.error('获取服务器状态失败:', error);
+      }
+    };
+
+    // 初始获取状态
+    fetchServerStatus();
+
+    // 每30秒更新一次状态
+    const interval = setInterval(fetchServerStatus, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleManualCheck = async () => {
     if (loading) return;
     await checkAvailability();
@@ -38,8 +68,42 @@ export function StatusBar() {
   };
   
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
-      <div className="text-sm text-gray-600">{getStatusText()}</div>
+    <div className="bg-white p-4 rounded-lg shadow">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">状态:</span>
+          <span className={`inline-block w-2 h-2 rounded-full ${loading ? 'bg-yellow-500' : 'bg-green-500'}`}></span>
+          <span className="text-sm">{loading ? '检查中...' : '就绪'}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">服务器监控:</span>
+          <span className={`inline-block w-2 h-2 rounded-full ${serverStatus?.running ? 'bg-green-500' : 'bg-red-500'}`}></span>
+          <span className="text-sm">{serverStatus?.running ? '运行中' : '已停止'}</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">监控项:</span>
+          <span className="text-sm">{enabledWatchConfigsCount} 个已启用</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">产品:</span>
+          <span className="text-sm">{products.length} 个</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">上次检查:</span>
+          <span className="text-sm">{lastChecked ? formatDate(lastChecked) : '从未'}</span>
+        </div>
+
+        {serverStatus?.lastCheck && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">服务器上次检查:</span>
+            <span className="text-sm">{formatDate(serverStatus.lastCheck)}</span>
+          </div>
+        )}
+      </div>
       
       <Button 
         onClick={handleManualCheck} 
