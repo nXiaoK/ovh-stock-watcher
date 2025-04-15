@@ -13,9 +13,9 @@ export let currentConfig: AppConfig | null = null;
 // 存储状态历史
 let statusHistory: Record<string, Record<string, DatacenterStatusHistory[]>> = {};
 // 测试模式标志
-export let testMode: boolean = false;
+let testMode: boolean = false;
 // 测试模式下的产品状态
-export let testModeProducts: OvhProduct[] = [];
+let testModeProducts: OvhProduct[] = [];
 
 // 配置文件路径
 const CONFIG_FILE_PATH = path.join(process.cwd(), 'data', 'monitor-config.json');
@@ -327,9 +327,6 @@ async function processNotifications(
       if (watchConfig.productFilters.fqn && watchConfig.productFilters.fqn !== product.fqn) {
         continue; // 不匹配，跳过
       }
-
-      // 找到之前的产品数据
-      const prevProduct = prevProducts.find(p => p.fqn === product.fqn);
 
       // 检查每个数据中心
       for (let i = 0; i < product.datacenters.length; i++) {
